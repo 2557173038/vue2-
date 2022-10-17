@@ -18,9 +18,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="registerFn" class="btn-reg"
-            >注册</el-button
-          >
+          <el-button type="primary" @click="registerFn" class="btn-reg">注册</el-button>
           <el-link type="info">去登录</el-link>
         </el-form-item>
       </el-form>
@@ -83,7 +81,17 @@ export default {
   },
   methods: {
     // 注册>>点击事件
-    registerFn () {}
+    registerFn () {
+      // js兜底校验
+      this.$refs.form.validate(valid => { // js调用表单总体校验方法
+        if (valid) {
+          // 通过校验
+          console.log(this.form)
+        } else {
+          return false // 阻止默认的提交行为 (表单下面红色提示会自动出现)
+        }
+      })
+    }
   }
 }
 </script>
