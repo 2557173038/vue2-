@@ -30,6 +30,7 @@
 // 经验
 // 前端绑定数据对象'属性名'，可以直接给要调用的功能接口参数一致
 // 好处，我可以直接把前端对象（带着同名的属性和前端的值）发给后台
+import { registerAPI } from '@/api/index'
 export default {
   name: 'my-register',
   data () {
@@ -83,10 +84,24 @@ export default {
     // 注册>>点击事件
     registerFn () {
       // js兜底校验
-      this.$refs.form.validate(valid => { // js调用表单总体校验方法
+      this.$refs.form.validate(async valid => { // js调用表单总体校验方法
         if (valid) {
-          // 通过校验
+          // 通过校验,拿到绑定的数据
           console.log(this.form)
+          // 1.调用注册接口
+          // 这里又是一个解构赋值 把axios返回的data字段对应的值保存在res上
+          // elementUI在VUE原型链上添加了弹窗提示，$message属性
+          const { data: res } = await registerAPI(this.form)
+          console.log(res)
+          // 2.注册失败提示用户
+          // return 必须：阻止代码继续往下
+          if (res.code !== 0) {
+            return this.$message.error(res.message)
+          }
+          // 3.注册成功，提示用户
+          this.$message.success(res.message)
+          // 4.跳转到登陆页面
+          this.$router.push('/login')
         } else {
           return false // 阻止默认的提交行为 (表单下面红色提示会自动出现)
         }
