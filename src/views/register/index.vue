@@ -19,7 +19,7 @@
 
         <el-form-item>
           <el-button type="primary" @click="registerFn" class="btn-reg">注册</el-button>
-          <el-link type="info">去登录</el-link>
+          <el-link type="info"  @click="goLogin">去登录</el-link>
         </el-form-item>
       </el-form>
     </div>
@@ -106,6 +106,9 @@ export default {
           return false // 阻止默认的提交行为 (表单下面红色提示会自动出现)
         }
       })
+    },
+    goLogin () {
+      this.$router.push('/login')
     }
   }
 }
