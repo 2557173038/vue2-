@@ -32,6 +32,7 @@
 
 <script>
 import { loginAPI } from '@/api/index'
+import { mapMutations } from 'vuex' // 辅助函数
 export default {
   name: 'my-login',
   data () {
@@ -55,6 +56,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['updateToken']),
     goReg () {
       this.$router.push('/reg')
     },
@@ -73,6 +75,8 @@ export default {
           } else {
             // 成功
             this.$message.success(res.message)
+            // 提交mutations把token字符串保存到vuex中
+            this.updateToken(res.token)
           }
         } else {
           // 没通过校验
