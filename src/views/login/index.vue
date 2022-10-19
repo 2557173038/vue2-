@@ -22,7 +22,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="btn-login">登录</el-button>
+          <el-button type="primary" class="btn-login" @click="loginFn">登录</el-button>
           <el-link type="info" @click="goReg">去注册</el-link>
         </el-form-item>
       </el-form>
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { loginAPI } from '@/api/index'
 export default {
   name: 'my-login',
   data () {
@@ -56,8 +57,31 @@ export default {
   methods: {
     goReg () {
       this.$router.push('/reg')
+    },
+    // 登录点击事件
+    loginFn () {
+      this.$refs.loginRef.validate(async valid => {
+        if (valid) {
+          // 通过校验
+          // console.log(this.loginForm)
+          // 就是为了拿到后台真正的数据赋予给res
+          const { data: res } = await loginAPI(this.loginForm)
+          // 根据后台返回的登录提示信息，做判断给用户提示
+          if (res.code !== 0) {
+            // 失败
+            this.$message.error(res.message)
+          } else {
+            // 成功
+            this.$message.success(res.message)
+          }
+        } else {
+          // 没通过校验
+          return false
+        }
+      })
     }
   }
+
 }
 </script>
 

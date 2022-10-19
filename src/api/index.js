@@ -33,3 +33,18 @@ export const registerAPI = ({ username, password, repassword }) => {
     }
   })
 }
+/**
+ *
+ * @param {*} param0 {username:用户名，password：密码}
+ * @returns promise对象
+ */
+export const loginAPI = ({ username, password }) => {
+  return request({
+    url: '/api/login',
+    method: 'POST',
+    data: {
+      username,
+      password
+    }
+  })
+}
