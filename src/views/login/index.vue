@@ -77,6 +77,8 @@ export default {
             this.$message.success(res.message)
             // 提交mutations把token字符串保存到vuex中
             this.updateToken(res.token)
+            // 跳转到布局页
+            this.$router.push('/')
           }
         } else {
           // 没通过校验
