@@ -6,7 +6,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: () => import('@/views/layout') // 默认打开直接看到布局页面
+    component: () => import('@/views/layout')
+    // 默认打开直接看到布局页面
   },
   {
     path: '/reg',
