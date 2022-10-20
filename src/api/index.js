@@ -2,7 +2,7 @@
 // 每个方法只负责请求一个URL地址
 
 import request from '@/utils/request' // 引入自定义axios函数
-
+import store from '@/store' // 引入store对象
 // registerAPI(this.form)
 //  registerAPI({
 //     username: '',
@@ -18,6 +18,12 @@ import request from '@/utils/request' // 引入自定义axios函数
 // key和value变量同名的时候。可以简写(key既为key也是value变量名)
 
 // 导出接口方法 ，为了在逻辑页面引入调用
+
+/**
+ * 注册接口
+ * @param {*} param0 {username:用户名，password：密码,repassword:确认密码}
+ * @returns promise对象
+ */
 export const registerAPI = ({ username, password, repassword }) => {
   return request({
     url: '/api/reg',
@@ -34,7 +40,7 @@ export const registerAPI = ({ username, password, repassword }) => {
   })
 }
 /**
- *
+ * 登录接口
  * @param {*} param0 {username:用户名，password：密码}
  * @returns promise对象
  */
@@ -46,5 +52,18 @@ export const loginAPI = ({ username, password }) => {
       username,
       password
     }
+  })
+}
+
+export const getUserInfoAPI = () => {
+  return request({
+    url: '/my/userinfo',
+    // method不写，默认get请求
+    // 传参给后台：params（查询字符串quary），data（请求体），headers（请求头）
+    headers: {
+      // this.$store.state.token 这里this不是组件对象不能用this.strote拿到store对象
+      Authorization: store.state.token
+    }
+
   })
 }
