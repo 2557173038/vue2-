@@ -6,8 +6,11 @@
 </template>
 
 <script>
-export default {
 
+export default {
+  created () {
+    this.$store.dispatch('getUserInfoActions')
+  }
 }
 </script>
 
