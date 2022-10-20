@@ -71,6 +71,8 @@ export default {
           // 他选择了确认
           // 清除vuex
           this.$store.commit('updateToken', '')
+          this.$store.commit('updateUserInfo', {})
+
           // 强制跳转登录页面
           this.$router.push('/login')
         })
