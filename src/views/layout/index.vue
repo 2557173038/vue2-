@@ -44,6 +44,8 @@
           <span>欢迎 {{ nickname || username }}</span>
         </div>
         <!-- 侧边栏的导航菜单 -->
+        <!-- 属性没有显示传值，默认值为true -->
+        <!-- routrt:设置上（默认值为true）就会当你点击某菜单的时候，以index值作为路由切换 -->
         <el-menu
           default-active="/home"
           class="el-menu-vertical-demo"
@@ -52,42 +54,28 @@
           background-color="#23262E"
           text-color="#fff"
           active-text-color="#409EFF"
+          unique-opened
+          router
         >
+        <template v-for="item in menus">
           <!-- 首页 -->
-          <el-menu-item index="/home">
-            <i class="el-icon-s-home"></i>
-            <span>首页</span>
+          <el-menu-item v-if="!item.children" :index='item.indexPath' :key="item.indexPath">
+            <i :class="item.icon"></i>
+            <span>{{item.title}}</span>
           </el-menu-item>
           <!-- 文章管理 -->
-          <el-submenu index="/topic">
+          <el-submenu v-else :index="item.indexPath" :key="item.indexPath">
             <template slot="title">
-              <i class="el-icon-s-home"></i>
-              <span>文章管理</span>
+              <i :class="item.icon"></i>
+              <span>{{item.title}}</span>
             </template>
-            <el-menu-item index="/topic1">
-              <i class="el-icon-s-home"></i>
-              <span>文章1</span>
-            </el-menu-item>
-            <el-menu-item index="/topic2">
-              <i class="el-icon-s-home"></i>
-              <span>文章2</span>
+            <el-menu-item index="/topic1" v-for="data in item.children" :key="data.indexPath">
+              <i :class="data.icon"></i>
+              <span>{{data.title}}</span>
             </el-menu-item>
           </el-submenu>
-          <!-- 个人中心 -->
-          <el-submenu index="/my">
-            <template slot="title">
-              <i class="el-icon-s-home"></i>
-              <span>个人中心</span>
-            </template>
-            <el-menu-item index="/my1">
-              <i class="el-icon-s-home"></i>
-              <span>1</span>
-            </el-menu-item>
-            <el-menu-item index="/my2">
-              <i class="el-icon-s-home"></i>
-              <span>2</span>
-            </el-menu-item>
-          </el-submenu>
+
+        </template>
         </el-menu>
       </el-aside>
       <el-container>
@@ -108,9 +96,14 @@
 // .native给组件内根标签，绑定这个原生的事件
 
 import { mapGetters } from 'vuex'
+import { getMenusInfoAPI } from '@/api'
 export default {
   name: 'my-layout',
-
+  data () {
+    return {
+      menus: [] // 保存侧边栏数据
+    }
+  },
   computed: {
     ...mapGetters(['username', 'nickname', 'user_pic'])
   },
@@ -142,7 +135,17 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    // 请求侧边栏数据
+    async getMenuListFn () {
+      const res = await getMenusInfoAPI()
+      this.menus = res.data.data
+      console.log(res)
     }
+  },
+  created () {
+    // 请求侧边栏数据
+    this.getMenuListFn()
   }
 }
 </script>
