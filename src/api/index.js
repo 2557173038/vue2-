@@ -2,7 +2,6 @@
 // 每个方法只负责请求一个URL地址
 
 import request from '@/utils/request' // 引入自定义axios函数
-import store from '@/store' // 引入store对象
 // registerAPI(this.form)
 //  registerAPI({
 //     username: '',
@@ -60,13 +59,10 @@ export const loginAPI = ({ username, password }) => {
  */
 export const getUserInfoAPI = () => {
   return request({
-    url: '/my/userinfo',
+    url: '/my/userinfo'
     // method不写，默认get请求
     // 传参给后台：params（查询字符串quary），data（请求体），headers（请求头）
-    headers: {
-      // this.$store.state.token 这里this不是组件对象不能用this.strote拿到store对象
-      Authorization: store.state.token
-    }
+
   })
 }
 /**
@@ -75,12 +71,9 @@ export const getUserInfoAPI = () => {
  */
 export const getMenusInfoAPI = () => {
   return request({
-    url: '/my/menus',
+    url: '/my/menus'
     // method不写，默认get请求
     // 传参给后台：params（查询字符串quary），data（请求体），headers（请求头）
-    headers: {
-      // this.$store.state.token 这里this不是组件对象不能用this.strote拿到store对象
-      Authorization: store.state.token
-    }
+
   })
 }
