@@ -15,7 +15,6 @@ myAxios.interceptors.request.use(function (config) {
   // console.log(config)
   // config配置对象(要请求后台的参数都在这个对象上)
   // 在请求前会触发一次,这个return交给axios源码内，根据配置项发起请求
-
   // 在发起时，统一携带Authorization和token值
   // 判断，登录页面和注册页面，vuex里无token，而且登录接口和注册接口也不需要携带token（其他页面需要）
   if (store.state.token) {
