@@ -47,7 +47,7 @@
         <!-- 属性没有显示传值，默认值为true -->
         <!-- routrt:设置上（默认值为true）就会当你点击某菜单的时候，以index值作为路由切换 -->
         <el-menu
-          default-active="/home"
+        :default-active="$route.path"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
@@ -69,7 +69,7 @@
               <i :class="item.icon"></i>
               <span>{{item.title}}</span>
             </template>
-            <el-menu-item index="/topic1" v-for="data in item.children" :key="data.indexPath">
+            <el-menu-item :index="data.indexPath" v-for="data in item.children" :key="data.indexPath">
               <i :class="data.icon"></i>
               <span>{{data.title}}</span>
             </el-menu-item>
