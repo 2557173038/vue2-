@@ -49,7 +49,7 @@ const whiteList = ['/login', '/reg'] // 白名单 （无需登录可以访问的
 // 3.：next()如果强制切换路由地址，会再次走路由守卫再次去匹配路由表
 router.beforeEach((to, from, next) => {
   const token = store.state.token
-  console.log(1)
+  // console.log(1)
   if (token) {
     // 登录了
     if (!store.state.userInfo.username) {

@@ -32,6 +32,7 @@
   </template>
 
 <script>
+import { updateUserInforAPI, getUserInfoAPI } from '@/api'
 export default {
   name: 'UserInfo',
   data () {
@@ -41,6 +42,7 @@ export default {
         nickname: '',
         email: ''
       },
+      user1: {},
       // 表单的验证规则对象
       userFormRules: {
         nickname: [
@@ -55,7 +57,36 @@ export default {
     }
   },
   methods: {
-    submitFn () {}
+    // 提交修改->点击事件
+    submitFn () {
+      // 兜底校验
+      this.$refs.userFormRef.validate(async valid => {
+        if (valid) {
+          // 通过校验
+          console.log(this.userForm)
+          // 因为后端更新用户基本资料接口，需要带id过去，userForm对象本身没有
+          // 所以缺少id，就给他添加一个
+          this.userForm.id = this.user1
+          const { data: res } = await updateUserInforAPI(this.userForm)
+          if (res.code !== 0) return this.$message.error('更新用户信息失败！')
+          // 更新用户信息成功，刷新 Vuex 中的数据
+          this.$message.success('更新成功！')
+          // 重新让vuex获取下最新的用户数据
+          this.$store.dispatch('getUserInfoActions')
+          console.log(res)
+        } else {
+          // 未通过校验
+          return false
+        }
+      })
+    },
+    async getMenuListFn () {
+      const res = await getUserInfoAPI()
+      this.user1 = res.data.data.id
+    }
+  },
+  created () {
+    this.getMenuListFn()
   }
 }
 </script>

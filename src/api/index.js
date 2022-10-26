@@ -77,3 +77,21 @@ export const getMenusInfoAPI = () => {
 
   })
 }
+/**
+ *  更新基本资料
+ * @param {*} param0
+ * @returns
+ */
+export const updateUserInforAPI = ({ id, username, nickname, email, user_pic }) => {
+  return request({
+    url: '/my/userinfo',
+    method: 'PUT',
+    data: {
+      id,
+      username,
+      nickname,
+      email,
+      user_pic
+    }
+  })
+}
