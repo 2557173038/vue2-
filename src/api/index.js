@@ -95,3 +95,12 @@ export const updateUserInforAPI = ({ id, username, nickname, email, user_pic }) 
     }
   })
 }
+export const updateUserAvatarAPI = ({ avatar }) => {
+  return request({
+    uel: '/my/update/avatar',
+    method: 'PATCH',
+    data: {
+      avatar
+    }
+  })
+}
