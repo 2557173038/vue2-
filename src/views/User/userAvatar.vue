@@ -26,18 +26,21 @@ export default {
     }
   },
   methods: {
+    // 点击事件-->选择图片
+    // 目的：为了让input【type=file】标签，让他再用js代码来触发他的点击事件(导致末默认行为给一个文件选择窗口)
+    // 原因：input[type=file]他是原生标签，样式不好改
+    // 解决：移花接木
     chooseImg () {
-      // 点击事件-->选择图片
       this.$refs.iptRef.click()
     },
-    onFileChange (e) {
-      // 获取用户选择的文件列表（伪数组）
-      const files = e.target.files
-      if (files.length === 0) {
+    // 选择图片确定了
+    onFileChange (e) { // e原生的事件对象
+      // 获取用户选择的文件列表(伪数组)
+      const files = e.target.files // 拿到用户选择的文件数组
+      if (files.lenght === 0) {
         // 没有选择图片
         this.avatar = ''
       } else {
-        // 选择了图片
         console.log(files[0])
       }
     }

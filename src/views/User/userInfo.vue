@@ -78,6 +78,7 @@ export default {
           // 未通过校验
           return false
         }
+        this.$refs.userFormRef.resetFields()
       })
     },
     // 重置按钮->点击事件
