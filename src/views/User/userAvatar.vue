@@ -5,7 +5,8 @@
       </div>
       <div>
         <!-- 图片，用来展示用户选择的头像 -->
-        <img class="the_img" src="../../assets/images/avatar.jpg" alt="" />
+        <img v-if="!avatar" class="the_img" src="../../assets/images/avatar.jpg" alt="" />
+        <img v-else :src="this.avatar">
 
         <!-- 按钮区域 -->
         <div class="btn-box">
@@ -22,7 +23,7 @@ export default {
   name: 'UserAvatar',
   data () {
     return {
-      avatar: ''
+      avatar: '' // 保存图片链接
     }
   },
   methods: {
@@ -42,6 +43,18 @@ export default {
         this.avatar = ''
       } else {
         console.log(files[0])
+        // 文件->内存临时地址，(这个地址只能在js内存里用不能发给后台)
+        // 语法：URL.createObjectURL(文件)
+        // 返回值:内存临时地址
+        // this.avatar = URL.createObjectURL(files[0])
+
+        // 2:文件->base64字符串(此字符串地址可以发给后台的)
+        const fr = new FileReader() // 拿到用户选择的文件
+        fr.readAsDataURL(files[0])// 传入文件对象开始读
+        fr.onload = (e) => { // onload等待把文件读成base64字符串后会触发onload事件函数
+          // e.target.result的值就是读完的结果
+          this.avatar = e.target.result
+        }
       }
     }
   }
