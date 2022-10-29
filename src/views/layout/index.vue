@@ -143,7 +143,7 @@ export default {
     async getMenuListFn () {
       const res = await getMenusInfoAPI()
       this.menus = res.data.data
-      console.log(res)
+      // console.log(res)
     }
   },
   created () {

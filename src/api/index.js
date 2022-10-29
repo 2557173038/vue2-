@@ -128,3 +128,13 @@ export const updateUserPwdAPI = ({ old_pwd, new_pwd, re_pwd }) => {
     }
   })
 }
+
+/**
+ * 获取文章分类
+ * @returns
+ */
+export const updateArtCateListAPI = () => {
+  return request({
+    url: '/my/cate/list'
+  })
+}
