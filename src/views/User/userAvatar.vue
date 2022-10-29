@@ -12,18 +12,18 @@
         <div class="btn-box">
           <input type="file" accept="image/*" style="display: none" ref="iptRef" @change="onFileChange" />
           <el-button type="primary" icon="el-icon-plus" @click="chooseImg">选择图片</el-button>
-          <el-button type="success" icon="el-icon-upload" :disabled="avatar === ''">上传头像</el-button>
+          <el-button type="success" icon="el-icon-upload" :disabled="avatar === ''"  @click="toAvatar">上传头像</el-button>
         </div>
       </div>
     </el-card>
   </template>
 <script>
-// import { updateUserAvatarAPI } from '@/api'
+import { updateUserAvatarAPI } from '@/api'
 export default {
   name: 'UserAvatar',
   data () {
     return {
-      avatar: '' // 保存图片链接
+      avatar: '' // 保存图片链接/base64字符串
     }
   },
   methods: {
@@ -54,10 +54,23 @@ export default {
         fr.onload = (e) => { // onload等待把文件读成base64字符串后会触发onload事件函数
           // e.target.result的值就是读完的结果
           this.avatar = e.target.result
+          // updateUserAvatarAPI(this.avatar)
         }
       }
+    },
+    async toAvatar () {
+    // 开始上传头像
+      const res = await updateUserAvatarAPI(this.avatar)
+      console.log(res)
+      if (res.data.code !== 0) {
+        return this.$message.error(res.data.message)
+      }
+      this.$message.success(res.data.message)
+      // 重新让vuex获取下最新的用户数据
+      this.$store.dispatch('getUserInfoActions')
     }
   }
+
 }
 </script>
 

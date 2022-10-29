@@ -95,12 +95,17 @@ export const updateUserInforAPI = ({ id, username, nickname, email, user_pic }) 
     }
   })
 }
-export const updateUserAvatarAPI = ({ avatar }) => {
+/**
+ * 更新用户头像
+ * @param {*} param0 avatar 头像图片base64字符串
+ * @returns promise对象
+ */
+export const updateUserAvatarAPI = (avatar) => {
   return request({
-    uel: '/my/update/avatar',
+    url: '/my/update/avatar',
     method: 'PATCH',
     data: {
-      avatar
+      avatar // 头像baes64字符串
     }
   })
 }
