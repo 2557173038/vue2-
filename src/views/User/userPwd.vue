@@ -15,14 +15,15 @@
           <el-input v-model="pwdForm.re_pwd" type="password"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">修改密码</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" @click="updatePwdFn">修改密码</el-button>
+          <el-button @click="resetFn">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
   </template>
 
 <script>
+import { updateUserPwdAPI } from '@/api'
 export default {
   name: 'UserPwd',
   data () {
@@ -59,14 +60,40 @@ export default {
         new_pwd: [
           { required: true, message: '请输入新密码', trigger: 'blur' },
           { pattern: /^\S{6,15}$/, message: '密码长度必须是6-15位的非空字符串', trigger: 'blur' },
-          { validator: samePwd, trigger: 'blur' }
+          { validator: samePwd, trigger: 'blur' } // 自定义校验 samePwd方法回调
         ],
         re_pwd: [
           { required: true, message: '请再次确认新密码', trigger: 'blur' },
           { pattern: /^\S{6,15}$/, message: '密码长度必须是6-15位的非空字符串', trigger: 'blur' },
-          { validator: rePwd, trigger: 'blur' }
+          { validator: rePwd, trigger: 'blur' } // 自定义校验
         ]
       }
+    }
+  },
+  methods: {
+    // 更新密码。点击事件
+    updatePwdFn () {
+      this.$refs.pwdFormRef.validate(async valid => {
+        if (valid) {
+          const res = await updateUserPwdAPI(this.pwdForm)
+          console.log(res)
+          if (res.data.code !== 0) {
+            return this.$message.error('原密码不正确!')
+          }
+          this.$message.success(res.data.message)
+          // 清除vuex里的数据
+          this.$store.commit('updateToken', '')
+          this.$store.commit('updateUserInfo', {})
+          // 跳转登录页面
+          this.$router.push('/login')
+        } else {
+          return false
+        }
+      })
+    },
+    resetFn () {
+      // 重置 -点击事件
+      this.$refs.pwdFormRef.resetFields() // ref内置重置方法
     }
   }
 }
