@@ -23,6 +23,10 @@ const routes = [
       {
         path: 'user-avatar',
         component: () => import('@/views/User/userAvatar')
+      },
+      {
+        path: 'user-pwd',
+        component: () => import('@/views/User/userPwd')
       }
     ]
   },
