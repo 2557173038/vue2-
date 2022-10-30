@@ -19,8 +19,12 @@
         <el-table-column prop="cate_name" label="分类名称"></el-table-column>
         <el-table-column prop="cate_alias" label="分类别名"></el-table-column>
         <el-table-column label="操作">
-          <el-button type="primary" size="mini">修改</el-button>
+            <!-- scope对象：{row:行对象} -->
+            <!-- scope.row拿到点击这一行的数据 -->
+            <template v-slot="scope">
+          <el-button type="primary" size="mini" @click="updateFn(scope.row)">修改</el-button>
           <el-button type="danger" size="mini" @click="cateClearFn">删除</el-button>
+        </template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -134,7 +138,15 @@ export default {
     },
     // 删除列表
     cateClearFn () {
-
+    },
+    // 修改分类按钮->点击事件(先做数据分析)
+    updateFn (obj) {
+      // 拿到这一行的值
+      console.log(obj)
+      this.dialogVisible = true
+      // 数据回显(回填)
+      this.addForm.cate_name = obj.cate_name
+      this.addForm.cate_alias = obj.cate_alias
     }
 
   }

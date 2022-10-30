@@ -85,7 +85,7 @@
         <router-view></router-view>
         </el-main>
         <!-- 底部 footer 区域 -->
-        <el-footer>© www.itheima.com - 黑马程序员</el-footer>
+        <el-footer>艾玛还挺牛</el-footer>
       </el-container>
     </el-container>
   </el-container>
