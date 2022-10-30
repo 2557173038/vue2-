@@ -4,7 +4,9 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix header-box">
         <span>文章分类</span>
-        <el-button type="primary" size="mini" @click="dialogVisible = true">添加分类</el-button>
+        <el-button type="primary" size="mini" @click="dialogVisible = true"
+          >添加分类</el-button
+        >
       </div>
       <!-- 分类数据表格 -->
       <el-table :data="cateList" style="width: 100%" border stripe>
@@ -30,18 +32,32 @@
     <!-- 运行时如下 -->
     <!-- <标签：:value=Vue变量 @input= val => vue变量 = val <标签>-->
     <!-- vue2里面一个标签v-modul只能用一次 vue3可以用多次 -->
-    <el-dialog
-      title="提示"
-
-      :visible.sync="dialogVisible"
-      width="30%"
-    >
-      <span>这是一段信息</span>
+    <el-dialog title="添加文章分类" :visible.sync="dialogVisible" width="30%" @close="dialogCloseFn">
+      <!-- 添加的表单 -->
+      <el-form
+        :model="addForm"
+        :rules="addRules"
+        ref="addRef"
+        label-width="80px"
+      >
+        <el-form-item label="分类名称" prop="cate_name">
+          <el-input
+            v-model="addForm.cate_name"
+            minlength="1"
+            maxlength="10"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="分类别名" prop="cate_alias">
+          <el-input
+            v-model="addForm.cate_alias"
+            minlength="1"
+            maxlength="15"
+          ></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="canceFn">取 消</el-button>
-        <el-button type="primary" @click="confirmFn"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="confirmFn">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -54,7 +70,22 @@ export default {
   data () {
     return {
       cateList: [],
-      dialogVisible: false// 控制文章分类对话框-出现(true)/隐藏(false)
+      dialogVisible: false, // 控制文章分类对话框-出现(true)/隐藏(false)
+
+      addForm: { // 添加表单的数据对象
+        cate_name: '',
+        cate_alias: ''
+      },
+      addRules: { // 添加表单的验证规则对象
+        cate_name: [
+          { required: true, message: '请输入分类名称', trigger: 'blur' },
+          { pattern: /^\S{1,10}$/, message: '分类名必须是1-10位的非空字符', trigger: 'blur' }
+        ],
+        cate_alias: [
+          { required: true, message: '请输入分类别名', trigger: 'blur' },
+          { pattern: /^[a-zA-Z0-9]{1,15}$/, message: '分类别名必须是1-15位的字母数字', trigger: 'blur' }
+        ]
+      }
     }
   },
   created () {
@@ -77,13 +108,18 @@ export default {
     confirmFn () {
       this.dialogVisible = false
     },
-    // 点击取消
+    // 对话框取消按钮->点击事件
     canceFn () {
       this.dialogVisible = false
+    },
+    // 对话框-关闭时的回调-清空表单
+    dialogCloseFn () {
+      this.$refs.addRef.resetFields()
     }
 
   }
 }
+
 </script>
 
   <style lang="less" scoped>
