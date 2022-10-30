@@ -165,11 +165,18 @@ export default {
       this.editId = obj.id
       this.dialogVisible = true
       // 数据回显(回填)
-      this.addForm.cate_name = obj.cate_name
-      this.addForm.cate_alias = obj.cate_alias
+      // 解决bug 让addForm空字符先挂载上 让回显变成异步执行不会一开始变成初始值
+      this.$nextTick(() => {
+        this.addForm.cate_name = obj.cate_name
+        this.addForm.cate_alias = obj.cate_alias
+      })
+
       // this.addForm.id = obj.id
     }
-
+    // 小bug
+    // 复现：第一次打开网页，先点修改，再点新增，发现输入框有值
+    // 原因：点击修改后，关闭对话框的时候置空失效了
+    // 具体分析：resetFields有问题
   }
 }
 
