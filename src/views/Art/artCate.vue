@@ -20,7 +20,7 @@
         <el-table-column prop="cate_alias" label="分类别名"></el-table-column>
         <el-table-column label="操作">
           <el-button type="primary" size="mini">修改</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="danger" size="mini" @click="cateClearFn">删除</el-button>
         </el-table-column>
       </el-table>
     </el-card>
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { updateArtCateListAPI } from '@/api'
+import { updateArtCateListAPI, updateArtCateAddAPI } from '@/api'
 export default {
   name: 'ArtCate',
   data () {
@@ -73,8 +73,8 @@ export default {
       dialogVisible: false, // 控制文章分类对话框-出现(true)/隐藏(false)
 
       addForm: { // 添加表单的数据对象
-        cate_name: '',
-        cate_alias: ''
+        cate_name: '', // 分类名称
+        cate_alias: '' // 分类别名
       },
       addRules: { // 添加表单的验证规则对象
         cate_name: [
@@ -103,10 +103,26 @@ export default {
     addCateRightFn () {
       this.dialogVisible = true
     },
-
     // 对话框确定按钮->点击事件->让对话框消失/掉用保存文章分类接口
     confirmFn () {
       this.dialogVisible = false
+      // 兜底校验
+      this.$refs.addRef.validate(async valid => {
+        if (valid) {
+          // 通过
+          const { data: res } = await updateArtCateAddAPI(this.addForm)
+          console.log(res)
+          if (res.code !== 0) {
+            return this.$message.error(res.message)
+          }
+          this.$message.success(res.message)
+          // 获取最新文章列表
+          this.getArtCateFn()
+        } else {
+          // 未通过
+          return false
+        }
+      })
     },
     // 对话框取消按钮->点击事件
     canceFn () {
@@ -115,6 +131,10 @@ export default {
     // 对话框-关闭时的回调-清空表单
     dialogCloseFn () {
       this.$refs.addRef.resetFields()
+    },
+    // 删除列表
+    cateClearFn () {
+
     }
 
   }

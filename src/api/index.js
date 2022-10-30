@@ -38,6 +38,7 @@ export const registerAPI = ({ username, password, repassword }) => {
     }
   })
 }
+
 /**
  * 登录接口
  * @param {*} param0 {username:用户名，password：密码}
@@ -53,6 +54,7 @@ export const loginAPI = ({ username, password }) => {
     }
   })
 }
+
 /**
  * 获取用户信息
  * @returns promise对象
@@ -65,6 +67,7 @@ export const getUserInfoAPI = () => {
 
   })
 }
+
 /**
  * 获取-侧边栏数据
  * @returns promise对象
@@ -77,6 +80,7 @@ export const getMenusInfoAPI = () => {
 
   })
 }
+
 /**
  *  更新基本资料
  * @param {*} param0
@@ -95,6 +99,7 @@ export const updateUserInforAPI = ({ id, username, nickname, email, user_pic }) 
     }
   })
 }
+
 /**
  * 更新用户头像
  * @param {*} param0 avatar 头像图片base64字符串
@@ -136,5 +141,22 @@ export const updateUserPwdAPI = ({ old_pwd, new_pwd, re_pwd }) => {
 export const updateArtCateListAPI = () => {
   return request({
     url: '/my/cate/list'
+  })
+}
+
+/**
+ * 添加-文章分类
+ * @param {*} cate_name 分类名称
+ * @param {*} cate_alias 分类别名
+ * @returns promise
+ */
+export const updateArtCateAddAPI = ({ cate_name, cate_alias }) => {
+  return request({
+    url: '/my/cate/add',
+    method: 'POST',
+    data: {
+      cate_name,
+      cate_alias
+    }
   })
 }
