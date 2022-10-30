@@ -154,6 +154,7 @@ export default {
 </script>
 
   <style lang="less" scoped>
+
 .main-container {
   height: 100%;
   .el-header,
