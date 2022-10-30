@@ -23,7 +23,7 @@
             <!-- scope.row拿到点击这一行的数据 -->
             <template v-slot="scope">
           <el-button type="primary" size="mini" @click="updateFn(scope.row)">修改</el-button>
-          <el-button type="danger" size="mini" @click="cateClearFn">删除</el-button>
+          <el-button type="danger" size="mini" @click="cateClearFn(scope.row)">删除</el-button>
         </template>
         </el-table-column>
       </el-table>
@@ -73,7 +73,7 @@
 // 2.在点击修改的时候，isedit改为true，editid保存要修改数据id
 // 3.在点击新增按钮的时候，isedit改为false，editid置空
 // 4.在点击保存按钮时(确定按钮)，就可以用isedit变量做区分了
-import { updateArtCateListAPI, updateArtCateAddAPI, updateArtCateAPI } from '@/api'
+import { updateArtCateListAPI, updateArtCateAddAPI, updateArtCateAPI, updateArtDelAPI } from '@/api'
 export default {
   name: 'ArtCate',
   data () {
@@ -111,12 +111,14 @@ export default {
       console.log(res)
       this.cateList = res.data.data
     },
+
     // 添加分类按钮点击事件->为了让对话框出现
     addCateRightFn () {
       this.isEdit = false // 变回新增状态标记
       this.dialogVisible = true
       this.editId = '' // 清空id
     },
+
     // 对话框确定按钮->点击事件->让对话框消失/掉用保存文章分类接口
     confirmFn () {
       // 兜底校验
@@ -128,7 +130,7 @@ export default {
             // 修改
             // this.addForm.id = this.editId
             const { data: res } = await updateArtCateAPI({ id: this.editId, ...this.addForm })
-            console.log(res)
+            // console.log(res)
             if (res.code !== 0) return this.$message.error(res.message)
             this.$message.success(res.message)
           } else {
@@ -146,17 +148,17 @@ export default {
         }
       })
     },
+
     // 对话框取消按钮->点击事件
     canceFn () {
       this.dialogVisible = false
     },
+
     // 对话框-关闭时的回调-清空表单
     dialogCloseFn () {
       this.$refs.addRef.resetFields()
     },
-    // 删除列表
-    cateClearFn () {
-    },
+
     // 修改分类按钮->点击事件(先做数据分析)
     updateFn (obj) {
       // 拿到这一行的值
@@ -172,7 +174,19 @@ export default {
       })
 
       // this.addForm.id = obj.id
+    },
+
+    // 删除分类按钮->点击事件
+    async cateClearFn (obj) {
+      // console.log(obj.id)
+      const { data: res } = await updateArtDelAPI(obj.id)
+      // console.log(res)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(res.message)
+      // 获取文章最新列表
+      this.getArtCateFn()
     }
+
     // 小bug
     // 复现：第一次打开网页，先点修改，再点新增，发现输入框有值
     // 原因：点击修改后，关闭对话框的时候置空失效了
