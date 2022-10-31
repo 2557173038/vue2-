@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <!-- 内容区域 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
@@ -15,8 +14,7 @@
               placeholder="请选择分类"
               size="small"
             >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option v-for="data in this.cateList" :label="data.cate_name" :value="data.id" :key="data.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="发布状态" style="margin-left: 15px">
@@ -31,7 +29,11 @@
           </el-form-item>
         </el-form>
         <!-- 发表文章的按钮 -->
-        <el-button type="primary" size="small" class="btn-pub" @click="showPubDialogFn"
+        <el-button
+          type="primary"
+          size="small"
+          class="btn-pub"
+          @click="showPubDialogFn"
           >发表文章</el-button
         >
       </div>
@@ -40,19 +42,39 @@
 
       <!-- 分页区域 -->
     </el-card>
-       <!-- 发表文章的 Dialog 对话框 -->
-       <el-dialog
+    <!-- 发表文章的 Dialog 对话框 -->
+    <el-dialog
       title="发表文章"
       :visible.sync="pubDialogVisible"
       fullscreen
       :before-close="handleClose"
     >
-      <span >这是一段信息</span>
+      <!-- 发布文章的对话框 -->
+      <el-form
+        :model="pubForm"
+        :rules="pubFormRules"
+        ref="pubFormRef"
+        label-width="100px"
+      >
+        <el-form-item label="文章标题" prop="title">
+          <el-input v-model="pubForm.title" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="文章分类" prop="cate_id">
+          <el-select
+            v-model="pubForm.cate_id"
+            placeholder="请选择分类"
+            style="width: 100%"
+          >
+            <el-option v-for="data in this.cateList" :label="data.cate_name" :value="data.id" :key="data.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { updateArtCateListAPI } from '@/api'
 export default {
   name: 'ArtList',
   data () {
@@ -64,8 +86,33 @@ export default {
         cate_id: '',
         state: ''
       },
-      pubDialogVisible: false // 控制发布文章对话框出现/隐藏(true/false)
+      pubForm: {
+        // 发布文章-表单的数据对象
+        title: '',
+        cate_id: ''
+      },
+      pubFormRules: {
+        // 发布文章-表单的验证规则对象
+        title: [
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          {
+            min: 1,
+            max: 30,
+            message: '文章标题的长度为1-30个字符',
+            trigger: 'blur'
+          }
+        ],
+        cate_id: [
+          { required: true, message: '请选择文章标题', trigger: 'blur' }
+        ]
+      },
+      pubDialogVisible: false, // 控制发布文章对话框出现/隐藏(true/false)
+      cateList: [] // 保存文章分类列表
     }
+  },
+  created () {
+    // 请求分类数据
+    this.getCateListFn()
   },
   methods: {
     // 发表文章->点击事件-让对话框出现
@@ -74,13 +121,18 @@ export default {
     },
     // 发布文章-对话框-关闭前的回调
     // 注意:只有dialog自带的右上角的x，和按下esc按键，和点击透明蒙层关闭才会走这里
-    async handleClose (done) { // done的作用：调用才会放行让对话框关闭
+    async handleClose (done) {
+      // done的作用：调用才会放行让对话框关闭
       // 询问用户是否确认关闭对话框
-      const confirmResult = await this.$confirm('此操作将导致文章信息丢失, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).catch(err => err) // 捕获确认框promise对象里选择取消时，拒绝状态结果cancel字符串
+      const confirmResult = await this.$confirm(
+        '此操作将导致文章信息丢失, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch((err) => err) // 捕获确认框promise对象里选择取消时，拒绝状态结果cancel字符串
       console.log(confirmResult)
       // $confirm内部虽然是一个确认提示框，但是它借用了promise语法来管理，点击确定他的状态为兑现成功返回confirm，如果用户点击了取消按钮，此promise对象状态为拒绝状态，返回cancel字符串
 
@@ -98,6 +150,10 @@ export default {
       if (confirmResult === 'cancel') return
       // 确认关闭
       done()
+    },
+    async getCateListFn () {
+      const { data: res } = await updateArtCateListAPI()
+      this.cateList = res.data
     }
   }
 }
