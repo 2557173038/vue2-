@@ -65,8 +65,12 @@
             placeholder="请选择分类"
             style="width: 100%"
           >
+          <!-- 因为整个标单要发给后台，去提前看眼vue代码里绑定是值需要什么，发现接口文档要的是分类id -->
             <el-option v-for="data in this.cateList" :label="data.cate_name" :value="data.id" :key="data.id"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item  lable="文章内容" prop="content">
+            <quill-editor v-model="pubForm.content"></quill-editor>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -88,8 +92,10 @@ export default {
       },
       pubForm: {
         // 发布文章-表单的数据对象
-        title: '',
-        cate_id: ''
+        title: '', // 文章标题
+        cate_id: '', // 文章分类id
+        content: '' // 发布内容
+
       },
       pubFormRules: {
         // 发布文章-表单的验证规则对象
@@ -101,9 +107,13 @@ export default {
             message: '文章标题的长度为1-30个字符',
             trigger: 'blur'
           }
+
         ],
         cate_id: [
           { required: true, message: '请选择文章标题', trigger: 'blur' }
+        ],
+        content: [
+          { required: true, message: '请选择文章内容', trigger: 'blur' }
         ]
       },
       pubDialogVisible: false, // 控制发布文章对话框出现/隐藏(true/false)
@@ -167,5 +177,12 @@ export default {
   .btn-pub {
     margin-top: 5px;
   }
+}
+// 设置富文本编辑器的默认最小高度
+// ::v-deep作用: 穿透选择, 正常style上加了scope的话, 会给.ql-editor[data-v-hash]属性, 只能选择当前页面标签或者组件的根标签
+// 如果想要选择组件内的标签(那些标签没有data-v-hash值)所以正常选择选不中, 加了::v-deep空格前置的话, 选择器就会变成如下形式
+// [data-v-hash] .ql-editor 这样就能选中组件内的标签的class类名了
+::v-deep .ql-editor {
+  min-height: 300px;
 }
 </style>
