@@ -109,6 +109,8 @@
 </template>
 
 <script>
+// webpack会把图片变为一个base64字符串/在打包后的图片临时地址
+import imgObj from '../../assets/images/cover.jpg'
 import { updateArtCateListAPI } from '@/api'
 export default {
   name: 'ArtList',
@@ -206,10 +208,14 @@ export default {
       const files = e.target.files
       if (files.length === 0) {
         // 用户没有选择图片 把cover_img置空
-        this.pubForm.cover_img = ''
+        this.pubForm.cover_img = null
+        this.$refs.imgRef.setAttribute('src', imgObj)
       } else {
         // 用户选择了图片，把文件直接保存到表单对象的属性里
         this.pubForm.cover_img = files[0]
+        // 把图片文件显示到img标签里
+        const url = URL.createObjectURL(files[0])
+        this.$refs.imgRef.setAttribute('src', url)
       }
     }
   }
