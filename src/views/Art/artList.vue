@@ -185,4 +185,5 @@ export default {
 ::v-deep .ql-editor {
   min-height: 300px;
 }
+
 </style>
