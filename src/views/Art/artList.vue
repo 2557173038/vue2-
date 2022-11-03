@@ -85,7 +85,7 @@
           <quill-editor v-model="pubForm.content"></quill-editor>
         </el-form-item>
         <!-- 文章封面 -->
-        <el-form-item label="文章封面">
+        <el-form-item label="文章封面"  prop="cover_img">
           <!-- 用来显示封面的图片 -->
           <img
             src="../../assets/images/cover.jpg"
@@ -164,10 +164,13 @@ export default {
           }
         ],
         cate_id: [
-          { required: true, message: '请选择文章标题', trigger: 'blur' }
+          { required: true, message: '请选择文章标题', trigger: 'change' }
         ],
         content: [
           { required: true, message: '请选择文章内容', trigger: 'blur' }
+        ],
+        cover_img: [
+          { required: true, message: '请选择图片', trigger: 'blur' }
         ]
       },
       pubDialogVisible: false, // 控制发布文章对话框出现/隐藏(true/false)
