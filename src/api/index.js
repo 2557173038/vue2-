@@ -178,7 +178,7 @@ export const updateArtCateAPI = ({ id, cate_name, cate_alias }) => {
   })
 }
 
-/**
+/**  params
  * 删除-文章分类
  * @param {*} param0 id
  * @returns promise
@@ -198,12 +198,29 @@ export const updateArtDelAPI = (id) => {
  * @param {*} fd formData 表单数据对象
  * @returns promise对象
  */
-export const updateArtListAPI = (fd) => {
+export const updateArtcliAPI = (fd) => {
   return request({
     url: '/my/article/add',
     method: 'POST',
     data: fd
     // {}如果是一个普通对象，axios会把它转成json字符串再请求体里交给后台
     // 这是接口文档要求请求体里要求是一个formData类型(表单数据对象)携带文件给后台
+  })
+}
+/**
+ * 获取文章列表
+ * @param {*}  { pagenum: 当前页码数, pagesize: 当前页条数, cate_id: 文章分类id, state: 文章状态 }
+ * @returns promise对象
+ */
+export const getArtListAPI = ({ pagenum, pagesize, cate_id, state }) => {
+  return request({
+    url: '/my/article/list',
+    params: {
+      pagenum,
+      pagesize,
+      cate_id,
+      state
+    }
+
   })
 }

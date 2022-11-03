@@ -44,7 +44,13 @@
       </div>
 
       <!-- 文章表格区域 -->
-
+      <el-table :data="artList" style="width: 100%" border stripe>
+        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="分类" prop="cate_name"></el-table-column>
+        <el-table-column label="发表时间" prop="pub_date"></el-table-column>
+        <el-table-column label="状态" prop="state"></el-table-column>
+        <el-table-column label="操作"></el-table-column>
+      </el-table>
       <!-- 分页区域 -->
     </el-card>
     <!-- 发表文章的 Dialog 对话框 -->
@@ -54,7 +60,6 @@
       fullscreen
       :before-close="handleClose"
       @close="dialogCloseFn"
-
     >
       <!-- 发布文章的对话框 -->
       <el-form
@@ -62,7 +67,6 @@
         :rules="pubFormRules"
         ref="pubFormRef"
         label-width="100px"
-
       >
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="pubForm.title" placeholder="请输入标题"></el-input>
@@ -85,10 +89,13 @@
         </el-form-item>
         <!-- 文章内容 -->
         <el-form-item lable="文章内容" prop="content">
-          <quill-editor v-model="pubForm.content" @blur="contentChangeFn"></quill-editor>
+          <quill-editor
+            v-model="pubForm.content"
+            @blur="contentChangeFn"
+          ></quill-editor>
         </el-form-item>
         <!-- 文章封面 -->
-        <el-form-item label="文章封面"  prop="cover_img">
+        <el-form-item label="文章封面" prop="cover_img">
           <!-- 用来显示封面的图片 -->
           <img
             src="../../assets/images/cover.jpg"
@@ -135,15 +142,15 @@
 // 注意：只有路径本地图片需要注意，如果你是一个http://外链的图片地址，就可以直接使用
 // 之间标签里写也行，或者用js变量保存后赋予标签，都OK、因为运行时，游览器发现src地址是外链就不找相对路径的文件夹了
 import imgObj from '../../assets/images/cover.jpg'
-import { updateArtCateListAPI, updateArtListAPI } from '@/api'
+import { updateArtCateListAPI, updateArtcliAPI, getArtListAPI } from '@/api'
 export default {
   name: 'ArtList',
   data () {
     return {
       // 查询参数对象
       q: {
-        pagenum: 1,
-        pagesize: 2,
+        pagenum: 1, // 默认拿第一页数据
+        pagesize: 3, // 默认当前页需要几条数据(传递给后台，后台就返回几个数据)
         cate_id: '',
         state: ''
       },
@@ -179,19 +186,34 @@ export default {
         content: [
           { required: true, message: '请选择文章内容', trigger: 'change' }
         ],
-        cover_img: [
-          { required: true, message: '请选择图片', trigger: 'blur' }
-        ]
+        cover_img: [{ required: true, message: '请选择图片', trigger: 'blur' }]
       },
       pubDialogVisible: false, // 控制发布文章对话框出现/隐藏(true/false)
-      cateList: [] // 保存文章分类列表
+      cateList: [], // 保存文章分类列表
+      artList: [], // 保存文章列表
+      total: 0 // 保存现有文章总数
     }
   },
   created () {
     // 请求分类数据
     this.getCateListFn()
+    // 请求文章列表
+    this.getArtListFn()
   },
+  mounted () {},
   methods: {
+    // 获取-所有分类
+    async getCateListFn () {
+      const { data: res } = await updateArtCateListAPI()
+      this.cateList = res.data
+    },
+    // 获取-所有文章列表
+    async getArtListFn () {
+      const { data: res } = await getArtListAPI(this.q)
+      this.artList = res.data // 保存当前获取的文章列表(注意：有分页不是所有数据)
+      this.total = res.total // 保存总数
+      // console.log('文章列表', res)
+    },
     // 发表文章->点击事件-让对话框出现
     showPubDialogFn () {
       this.pubDialogVisible = true
@@ -228,10 +250,6 @@ export default {
       // 确认关闭
       done()
     },
-    async getCateListFn () {
-      const { data: res } = await updateArtCateListAPI()
-      this.cateList = res.data
-    },
     // 选择封面点击事件->让文件选择窗口出现
     selCoverFn () {
       this.$refs.iptFileRef.click() // 用js代码模拟一次点击事件动作
@@ -263,7 +281,7 @@ export default {
       // str值 '已发布'，或者 '草稿' (后端要求的参数值)
       this.pubForm.state = str
       // 兜底校验
-      this.$refs.pubFormRef.validate(async valid => {
+      this.$refs.pubFormRef.validate(async (valid) => {
         if (valid) {
           // 通过
           // console.log(this.pubForm)
@@ -274,13 +292,15 @@ export default {
           fd.append('content', this.pubForm.content)
           fd.append('cover_img', this.pubForm.cover_img)
           fd.append('state', this.pubForm.state)
-          const { data: res } = await updateArtListAPI(fd)
+          const { data: res } = await updateArtcliAPI(fd)
           //
           if (res.code !== 0) return this.$message.error(res.message)
           this.$message.success(res.message)
 
           // 关闭对话框
           this.pubDialogVisible = false
+          // 刷新文章列表->再次请求文章列表数据
+          this.getArtListFn()
         } else {
           return false // 阻止默认行为
         }
