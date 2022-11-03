@@ -193,6 +193,21 @@ export const updateArtDelAPI = (id) => {
     }
   })
 }
-export const updateArtList = ({ title }) => {
-
+/**
+ *
+ * @param {*} param0
+ * @returns
+ */
+export const updateArtList = ({ title, cate_id, content, cover_img, state }) => {
+  return request({
+    url: '/my/article/add',
+    method: 'POST',
+    data: {
+      title,
+      cate_id,
+      content,
+      cover_img,
+      state
+    }
+  })
 }

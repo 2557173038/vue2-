@@ -132,7 +132,7 @@
 // 注意：只有路径本地图片需要注意，如果你是一个http://外链的图片地址，就可以直接使用
 // 之间标签里写也行，或者用js变量保存后赋予标签，都OK、因为运行时，游览器发现src地址是外链就不找相对路径的文件夹了
 import imgObj from '../../assets/images/cover.jpg'
-import { updateArtCateListAPI } from '@/api'
+import { updateArtCateListAPI, updateArtList } from '@/api'
 export default {
   name: 'ArtList',
   data () {
@@ -245,7 +245,17 @@ export default {
     pubArticleFn (str) {
       // str值 '已发布'，或者 '草稿' (后端要求的参数值)
       this.pubForm.state = str
-      console.log(this.pubForm)
+      // 兜底校验
+      this.$refs.pubFormRef.validate(async valid => {
+        if (valid) {
+          // 通过
+          console.log(this.pubForm)
+          const res = updateArtList(this.pubForm)
+          console.log(res)
+        } else {
+          return false // 阻止默认行为
+        }
+      })
     }
   }
 }
