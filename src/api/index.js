@@ -194,20 +194,16 @@ export const updateArtDelAPI = (id) => {
   })
 }
 /**
- *
- * @param {*} param0
- * @returns
+ * 发布文章
+ * @param {*} fd formData 表单数据对象
+ * @returns promise对象
  */
-export const updateArtList = ({ title, cate_id, content, cover_img, state }) => {
+export const updateArtListAPI = (fd) => {
   return request({
     url: '/my/article/add',
     method: 'POST',
-    data: {
-      title,
-      cate_id,
-      content,
-      cover_img,
-      state
-    }
+    data: fd
+    // {}如果是一个普通对象，axios会把它转成json字符串再请求体里交给后台
+    // 这是接口文档要求请求体里要求是一个formData类型(表单数据对象)携带文件给后台
   })
 }
