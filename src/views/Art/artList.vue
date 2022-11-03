@@ -170,10 +170,9 @@ export default {
         // 原因：
         // el-input等输入框在blur事件时进行校验
         // 下拉菜单，单选框，复选框，是在change事件进行校验
-        // quill-editor2个事件都没有，所以你输入内容也不会自动走校验
         // 解决：
         // 自己来给quill-editor绑定change事件(在文档里查到的)
-        // 在事件处理函数中，用el-from组件对象内，调用某个校验规则再重新执行
+        // 在事件处理函数中用el-from组件对象内，调用某个校验规则再重新执行(validateField)
         content: [
           { required: true, message: '请选择文章内容', trigger: 'change' }
         ],
@@ -239,6 +238,7 @@ export default {
       // e.target 拿到触发事件的那个标签(input标签对象本身)
       // e.target.files 拿到选择的文件数组
       const files = e.target.files
+
       if (files.length === 0) {
         // 用户没有选择图片 把cover_img置空
         this.pubForm.cover_img = null
@@ -251,6 +251,9 @@ export default {
         const url = URL.createObjectURL(files[0])
         this.$refs.imgRef.setAttribute('src', url)
       }
+
+      // 让表单单独校验封面的规则
+      this.$refs.pubFormRef.validateField('cover_img')
     },
     // 表单里(点击发布/存为草稿)按钮点击事件——>准备调用后端接口
     pubArticleFn (str) {
