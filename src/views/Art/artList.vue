@@ -64,6 +64,7 @@
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="pubForm.title" placeholder="请输入标题"></el-input>
         </el-form-item>
+        <!-- 文章分类 -->
         <el-form-item label="文章分类" prop="cate_id">
           <el-select
             v-model="pubForm.cate_id"
@@ -79,6 +80,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <!-- 文章内容 -->
         <el-form-item lable="文章内容" prop="content">
           <quill-editor v-model="pubForm.content"></quill-editor>
         </el-form-item>
@@ -103,6 +105,15 @@
           <!-- 选择封面的按钮 -->
           <el-button type="text" @click="selCoverFn">+ 选择封面</el-button>
         </el-form-item>
+        <!-- 文章发布 -->
+        <el-form-item>
+          <el-button type="primary" @click="pubArticleFn('已发布')"
+            >发布</el-button
+          >
+          <el-button type="info" @click="pubArticleFn('草稿')"
+            >存为草稿</el-button
+          >
+        </el-form-item>
       </el-form>
     </el-dialog>
   </div>
@@ -118,6 +129,8 @@
 // 以前：我们写的路径是在vscode看着文件夹写的(以前好使的原因，用live serve/磁盘双击打开。他都能通过你的相对路径，在指定的文件夹下，找到图片文件的真身 )
 // 现在：写的模板代码，是要被webpack翻译处理转换的，你vscode里的代码，转换后打包到内存中/dist下，相对路径就会变化，运行时你写的固定路径字符串就找不到那个文件真身了
 // 解决：js引入图片，就用import引入，让webpack把他当作模块数据，是装换成打包后的图片路径还是baes64字符串
+// 注意：只有路径本地图片需要注意，如果你是一个http://外链的图片地址，就可以直接使用
+// 之间标签里写也行，或者用js变量保存后赋予标签，都OK、因为运行时，游览器发现src地址是外链就不找相对路径的文件夹了
 import imgObj from '../../assets/images/cover.jpg'
 import { updateArtCateListAPI } from '@/api'
 export default {
@@ -136,7 +149,8 @@ export default {
         title: '', // 文章标题
         cate_id: '', // 文章分类id
         content: '', // 发布内容
-        cover_img: '' // 封面图片(保存的是文件)
+        cover_img: '', // 封面图片(保存的是文件)
+        state: ''
       },
       pubFormRules: {
         // 发布文章-表单的验证规则对象
@@ -226,6 +240,12 @@ export default {
         const url = URL.createObjectURL(files[0])
         this.$refs.imgRef.setAttribute('src', url)
       }
+    },
+    // 表单里(点击发布/存为草稿)按钮点击事件——>准备调用后端接口
+    pubArticleFn (str) {
+      // str值 '已发布'，或者 '草稿' (后端要求的参数值)
+      this.pubForm.state = str
+      console.log(this.pubForm)
     }
   }
 }
