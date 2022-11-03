@@ -110,6 +110,14 @@
 
 <script>
 // webpack会把图片变为一个base64字符串/在打包后的图片临时地址
+// 标签和样式中，引入图片文件，直接写静态路径(把路径放在js的发vue变量再赋予是不行的)
+// 原因：webpack在分析标签的时候，如果src的值是一个相对路径，他回去帮我们去找到那个路径文件并一起打包
+// 打包的时候，会分析文件的大小。小图片转成base64字符串再赋值给src，如果是大图片拷贝图片换个路径给img(运行时)
+
+// vue变量中路径，赋予给标签，都会当作普通的字符串使用
+// 以前：我们写的路径是在vscode看着文件夹写的(以前好使的原因，用live serve/磁盘双击打开。他都能通过你的相对路径，在指定的文件夹下，找到图片文件的真身 )
+// 现在：写的模板代码，是要被webpack翻译处理转换的，你vscode里的代码，转换后打包到内存中/dist下，相对路径就会变化，运行时你写的固定路径字符串就找不到那个文件真身了
+// 解决：js引入图片，就用import引入，让webpack把他当作模块数据，是装换成打包后的图片路径还是baes64字符串
 import imgObj from '../../assets/images/cover.jpg'
 import { updateArtCateListAPI } from '@/api'
 export default {
@@ -209,6 +217,7 @@ export default {
       if (files.length === 0) {
         // 用户没有选择图片 把cover_img置空
         this.pubForm.cover_img = null
+
         this.$refs.imgRef.setAttribute('src', imgObj)
       } else {
         // 用户选择了图片，把文件直接保存到表单对象的属性里
