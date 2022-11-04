@@ -64,7 +64,16 @@
           </template>
         </el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作">
+          <!--
+            scope变量值：{
+              row:行数据对象
+            }
+           -->
+        <template v-slot="{ row }">
+           <el-button type="danger" size="mini" @click="removeFn(row.id)">删除</el-button>
+        </template>
+        </el-table-column>
       </el-table>
       <!-- 分页区域 -->
       <el-pagination
@@ -169,7 +178,7 @@
       <el-divider></el-divider>
 
       <!-- 文章的封面 -->
-      <img v-if="artDetail.cover_img" alt="" :src="'http://big-event-vue-api-t.itheima.net'+artDetail.cover_img "/>
+      <img v-if="artDetail.cover_img" alt="" :src="baseURL+artDetail.cover_img "/>
 
       <!-- 文章的详情 -->
       <div class="detail-box" v-html="this.artDetail.content"></div>
@@ -190,11 +199,13 @@
 // 注意：只有路径本地图片需要注意，如果你是一个http://外链的图片地址，就可以直接使用
 // 之间标签里写也行，或者用js变量保存后赋予标签，都OK、因为运行时，游览器发现src地址是外链就不找相对路径的文件夹了
 import imgObj from '../../assets/images/cover.jpg'
+import { baseURL } from '@/utils/request'
 import {
   updateArtCateListAPI,
   updateArtcliAPI,
   getArtListAPI,
-  getArtDetailAPI
+  getArtDetailAPI,
+  deleteArtDetailAPI
 } from '@/api'
 export default {
   name: 'ArtList',
@@ -246,7 +257,8 @@ export default {
       cateList: [], // 保存文章分类列表
       artList: [], // 保存文章列表
       total: 0, // 保存现有文章总数
-      artDetail: {} // 保存文章详情
+      artDetail: {}, // 保存文章详情
+      baseURL: baseURL
     }
   },
   created () {
@@ -417,9 +429,28 @@ export default {
     async showDetailFn (artID) {
       // artID:文章id值
       const res = await getArtDetailAPI(artID)
-      console.log(res)
+      // console.log(res)
       this.detailVisible = true
       this.artDetail = res.data.data
+    },
+    // 删除文章->点击事件
+    async removeFn (id) {
+      const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+
+      // 2. 取消了删除
+      if (confirmResult === 'cancel') return
+
+      // 执行删除的操作
+      const { data: res } = await deleteArtDetailAPI(id)
+
+      if (res.code !== 0) return this.$message.error('删除失败!')
+      this.$message.success('删除成功!')
+      // 刷新列表数据
+      this.getArtListFn()
     }
   }
 }
