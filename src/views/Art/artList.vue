@@ -333,21 +333,31 @@ export default {
       // 我们需要手动给封面标签重新设置一个值，因为他没有受到v-modul影响
       this.$refs.imgRef.setAttribute('src', imgObj)
     },
-    // 核心思想:根据选择的页码/条数，影响q对象对应属性的值，重新再发一遍请求让后台重新返回数据
-    // 分页->每条页数改变时触发
-    handleCurrentChangeFn (nowPage) {
-      // nawPage:当前要看的第几页的页数
-      this.q.pagenum = nowPage
-      this.getArtListFn()
-    },
-    // 当前页码改动试触发
+    // 分页->每页条数改变时触发
     handleSizeChangeFn (size) {
+      // console.log('每页条数改变', size)
       // size：当前需要每页显示的条数
       // 因为再pagination标签已经加上了async。子组件会双向绑定到右侧vue变量上(q对象里pagesize已经改变了)
       // 如果不放心，可以再写一遍
       this.q.pagesize = size
+      // 问题：先点击最后一个页码，切换每页显示条数2->3，总数不够。分页只能分到2
+      // 每页条数改变了，页码从2到3页改变了，2个事件都会触发
+      // 偶发性的bug：有时候自动回到第二页有数据的时候有时候没有
+      // 知识点：2个网络请求一起发，谁先回来不一定，所以有可能第二页三条数据回来有值铺设，紧接着第三页三条数据回来了。空数组所以页面就是空的
+      // 解决：当切换每页显示条数，我们就把当前页码设置为1，而且标签里要设置
+      this.q.pagenum = 1
       this.getArtListFn()
     },
+    // 核心思想:根据选择的页码/条数，影响q对象对应属性的值，重新再发一遍请求让后台重新返回数据
+    // 当前页码改动时触发
+    handleCurrentChangeFn (nowPage) {
+      // nawPage:当前要看的第几页的页数
+      // console.log('页码', nowPage)
+
+      this.q.pagenum = nowPage
+      this.getArtListFn()
+    },
+
     // 筛选按钮->点击事件
     choseFn () {
       // 当有了筛选的条件，我想让页码回归1，每页的条数回归2
