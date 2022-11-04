@@ -50,13 +50,23 @@
         <!-- scope拿到组件内的数据 -->
         <el-table-column label="发表时间" prop="pub_date">
           <template v-slot="scope">
-            <span>{{$formatDate(scope.row.pub_date)}}</span>
+            <span>{{ $formatDate(scope.row.pub_date) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
         <el-table-column label="操作"></el-table-column>
       </el-table>
       <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChangeFn"
+        @current-change="handleCurrentChangeFn"
+        :current-page.sync="q.pagenum"
+        :page-sizes="[2, 3, 5, 10]"
+        :page-size.sync="q.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total=this.total
+      >
+      </el-pagination>
     </el-card>
     <!-- 发表文章的 Dialog 对话框 -->
     <el-dialog
@@ -155,7 +165,7 @@ export default {
       // 查询参数对象
       q: {
         pagenum: 1, // 默认拿第一页数据
-        pagesize: 3, // 默认当前页需要几条数据(传递给后台，后台就返回几个数据)
+        pagesize: 2, // 默认当前页需要几条数据(传递给后台，后台就返回几个数据)
         cate_id: '',
         state: ''
       },
@@ -322,6 +332,21 @@ export default {
       this.$refs.pubFormRef.resetFields()
       // 我们需要手动给封面标签重新设置一个值，因为他没有受到v-modul影响
       this.$refs.imgRef.setAttribute('src', imgObj)
+    },
+    // 分页->每条页数改变时触发
+    handleCurrentChangeFn (nowPage) {
+      // nawPage:当前要看的第几页的页数
+      this.q.pagenum = nowPage
+      this.getArtListFn()
+    },
+    // 核心思想:根据选择的页码/条数，影响q对象对应属性的值，重新再发一遍请求让后台重新返回数据
+    // 当前页码改动试触发
+    handleSizeChangeFn (size) {
+      // size：当前需要每页显示的条数
+      // 因为再pagination标签已经加上了async。子组件会双向绑定到右侧vue变量上(q对象里pagesize已经改变了)
+      // 如果不放心，可以再写一遍
+      this.q.pagesize = size
+      this.getArtListFn()
     }
   }
 }
