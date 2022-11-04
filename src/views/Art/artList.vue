@@ -29,8 +29,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small">筛选</el-button>
-            <el-button type="info" size="small">重置</el-button>
+            <el-button type="primary" size="small" @click="choseFn">筛选</el-button>
+            <el-button type="info" size="small" @click="resetFn">重置</el-button>
           </el-form-item>
         </el-form>
         <!-- 发表文章的按钮 -->
@@ -166,7 +166,7 @@ export default {
       q: {
         pagenum: 1, // 默认拿第一页数据
         pagesize: 2, // 默认当前页需要几条数据(传递给后台，后台就返回几个数据)
-        cate_id: '',
+        cate_id: '', // 文章分类id
         state: ''
       },
       pubForm: {
@@ -333,19 +333,34 @@ export default {
       // 我们需要手动给封面标签重新设置一个值，因为他没有受到v-modul影响
       this.$refs.imgRef.setAttribute('src', imgObj)
     },
+    // 核心思想:根据选择的页码/条数，影响q对象对应属性的值，重新再发一遍请求让后台重新返回数据
     // 分页->每条页数改变时触发
     handleCurrentChangeFn (nowPage) {
       // nawPage:当前要看的第几页的页数
       this.q.pagenum = nowPage
       this.getArtListFn()
     },
-    // 核心思想:根据选择的页码/条数，影响q对象对应属性的值，重新再发一遍请求让后台重新返回数据
     // 当前页码改动试触发
     handleSizeChangeFn (size) {
       // size：当前需要每页显示的条数
       // 因为再pagination标签已经加上了async。子组件会双向绑定到右侧vue变量上(q对象里pagesize已经改变了)
       // 如果不放心，可以再写一遍
       this.q.pagesize = size
+      this.getArtListFn()
+    },
+    // 筛选按钮->点击事件
+    choseFn () {
+      // 当有了筛选的条件，我想让页码回归1，每页的条数回归2
+      this.q.pagenum = 1
+      this.q.pagesize = 2
+      this.getArtListFn()
+    },
+    // 重置按钮->点击事件
+    resetFn () {
+      this.q.pagenum = 1
+      this.q.pagesize = 2
+      this.q.cate_id = ''
+      this.q.state = '' // 对象改变，v-modul关联的表单标签也会变为空
       this.getArtListFn()
     }
   }
