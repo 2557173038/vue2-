@@ -29,8 +29,12 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="choseFn">筛选</el-button>
-            <el-button type="info" size="small" @click="resetFn">重置</el-button>
+            <el-button type="primary" size="small" @click="choseFn"
+              >筛选</el-button
+            >
+            <el-button type="info" size="small" @click="resetFn"
+              >重置</el-button
+            >
           </el-form-item>
         </el-form>
         <!-- 发表文章的按钮 -->
@@ -47,7 +51,9 @@
       <el-table :data="artList" style="width: 100%" border stripe>
         <el-table-column label="文章标题" prop="title">
           <template v-slot="scope">
-            <el-link type="primary" @click="showDetailFn(scope.row.id)">{{scope.row.title}}</el-link>
+            <el-link type="primary" @click="showDetailFn(scope.row.id)">{{
+              scope.row.title
+            }}</el-link>
           </template>
         </el-table-column>
         <el-table-column label="分类" prop="cate_name"></el-table-column>
@@ -68,7 +74,7 @@
         :page-sizes="[2, 3, 5, 10]"
         :page-size.sync="q.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total=this.total
+        :total="this.total"
       >
       </el-pagination>
     </el-card>
@@ -145,6 +151,29 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- 查看文章详情的对话框 -->
+    <el-dialog
+    title="文章预览"
+    :visible.sync="detailVisible"
+     width="80%">
+      <h1 class="title">{{this.artDetail.title}}</h1>
+
+      <div class="info">
+        <span>作者：{{this.artDetail.nickname||this.artDetail.username}}</span>
+        <span>发布时间：{{$formatDate(this.artDetail.pub_date)}}</span>
+        <span>所属分类：{{this.artDetail.cate_name}}</span>
+        <span>状态：{{this.artDetail.state}}</span>
+      </div>
+
+      <!-- 分割线 -->
+      <el-divider></el-divider>
+
+      <!-- 文章的封面 -->
+      <img alt="" :src="this.artDetail.cover_img "/>
+
+      <!-- 文章的详情 -->
+      <div class="detail-box" v-html="this.artDetail.content"></div>
+    </el-dialog>
   </div>
 </template>
 
@@ -161,7 +190,12 @@
 // 注意：只有路径本地图片需要注意，如果你是一个http://外链的图片地址，就可以直接使用
 // 之间标签里写也行，或者用js变量保存后赋予标签，都OK、因为运行时，游览器发现src地址是外链就不找相对路径的文件夹了
 import imgObj from '../../assets/images/cover.jpg'
-import { updateArtCateListAPI, updateArtcliAPI, getArtListAPI, getArtDetailAPI } from '@/api'
+import {
+  updateArtCateListAPI,
+  updateArtcliAPI,
+  getArtListAPI,
+  getArtDetailAPI
+} from '@/api'
 export default {
   name: 'ArtList',
   data () {
@@ -208,9 +242,11 @@ export default {
         cover_img: [{ required: true, message: '请选择图片', trigger: 'blur' }]
       },
       pubDialogVisible: false, // 控制发布文章对话框出现/隐藏(true/false)
+      detailVisible: false, // 控制文章详情显示
       cateList: [], // 保存文章分类列表
       artList: [], // 保存文章列表
-      total: 0 // 保存现有文章总数
+      total: 0, // 保存现有文章总数
+      artDetail: {} // 保存文章详情
     }
   },
   created () {
@@ -382,6 +418,8 @@ export default {
       // artID:文章id值
       const res = await getArtDetailAPI(artID)
       console.log(res)
+      this.detailVisible = true
+      this.artDetail = res.data.data
     }
   }
 }
@@ -408,5 +446,26 @@ export default {
   width: 400px;
   height: 280px;
   object-fit: cover;
+}
+.title {
+  font-size: 24px;
+  text-align: center;
+  font-weight: normal;
+  color: #000;
+  margin: 0 0 10px 0;
+}
+
+.info {
+  font-size: 12px;
+  span {
+    margin-right: 20px;
+  }
+}
+
+// 修改 dialog 内部元素的样式，需要添加样式穿透
+::v-deep .detail-box {
+  img {
+    width: 500px;
+  }
 }
 </style>
