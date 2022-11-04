@@ -156,20 +156,20 @@
     title="文章预览"
     :visible.sync="detailVisible"
      width="80%">
-      <h1 class="title">{{this.artDetail.title}}</h1>
+      <h1 class="title">{{artDetail.title}}</h1>
 
       <div class="info">
-        <span>作者：{{this.artDetail.nickname||this.artDetail.username}}</span>
-        <span>发布时间：{{$formatDate(this.artDetail.pub_date)}}</span>
-        <span>所属分类：{{this.artDetail.cate_name}}</span>
-        <span>状态：{{this.artDetail.state}}</span>
+        <span>作者：{{artDetail.nickname||artDetail.username}}</span>
+        <span>发布时间：{{$formatDate(artDetail.pub_date)}}</span>
+        <span>所属分类：{{artDetail.cate_name}}</span>
+        <span>状态：{{artDetail.state}}</span>
       </div>
 
       <!-- 分割线 -->
       <el-divider></el-divider>
 
       <!-- 文章的封面 -->
-      <img alt="" :src="this.artDetail.cover_img "/>
+      <img v-if="artDetail.cover_img" alt="" :src="'http://big-event-vue-api-t.itheima.net'+artDetail.cover_img "/>
 
       <!-- 文章的详情 -->
       <div class="detail-box" v-html="this.artDetail.content"></div>
