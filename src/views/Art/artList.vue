@@ -45,7 +45,11 @@
 
       <!-- 文章表格区域 -->
       <el-table :data="artList" style="width: 100%" border stripe>
-        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="文章标题" prop="title">
+          <template v-slot="scope">
+            <el-link type="primary" @click="showDetailFn(scope.row.id)">{{scope.row.title}}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column label="分类" prop="cate_name"></el-table-column>
         <!-- scope拿到组件内的数据 -->
         <el-table-column label="发表时间" prop="pub_date">
@@ -157,7 +161,7 @@
 // 注意：只有路径本地图片需要注意，如果你是一个http://外链的图片地址，就可以直接使用
 // 之间标签里写也行，或者用js变量保存后赋予标签，都OK、因为运行时，游览器发现src地址是外链就不找相对路径的文件夹了
 import imgObj from '../../assets/images/cover.jpg'
-import { updateArtCateListAPI, updateArtcliAPI, getArtListAPI } from '@/api'
+import { updateArtCateListAPI, updateArtcliAPI, getArtListAPI, getArtDetailAPI } from '@/api'
 export default {
   name: 'ArtList',
   data () {
@@ -372,6 +376,12 @@ export default {
       this.q.cate_id = ''
       this.q.state = '' // 对象改变，v-modul关联的表单标签也会变为空
       this.getArtListFn()
+    },
+    // 文章标题点击事件->查看详情
+    async showDetailFn (artID) {
+      // artID:文章id值
+      const res = await getArtDetailAPI(artID)
+      console.log(res)
     }
   }
 }
