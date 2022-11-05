@@ -449,8 +449,18 @@ export default {
 
       if (res.code !== 0) return this.$message.error('删除失败!')
       this.$message.success('删除成功!')
+
+      // 数组里只保存当前页的数据，别的页的需要传参q给后台获取覆盖
+      if (this.artList.length === 1) {
+        if (this.p.pagenum > 1) {
+          this.q.pagenum--
+        }
+      }
       // 刷新列表数据
       this.getArtListFn()
+
+      // 问题：在最后一页删除最后一条时，虽然页码能回到上一页，但是数据没有出现
+      // 原因：发现newword里参数q.pagenum的值不会自己回到上一页，因为男的代码里没有修改过这个q.pagenum值，只是调用getArtListFn方法，带着之前的参数请求去了所以没数据
     }
   }
 }
