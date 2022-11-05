@@ -13,5 +13,6 @@ module.exports = defineConfig({
       'Access-Control-Allow-Origin': '*'
     }
   },
-  transpileDependencies: true
+  transpileDependencies: true,
+  publicPath: './'
 })
