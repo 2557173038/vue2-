@@ -38,7 +38,7 @@ vue-quill-editor  (富文本编辑器 用于发表文章)
 ```
 ###  演示图：
 
-![image](image/1.jpg)
+![image](file:///D:/web/code/vue2%E5%A4%A7%E4%BA%8B%E4%BB%B6%E9%A1%B9%E7%9B%AE/vue-event/image/1.jpg)
 ![image](image/2.png)
 ![image](image/3.png)
 ![image](image/4.png)
