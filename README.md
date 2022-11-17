@@ -46,6 +46,6 @@ vue-quill-editor  (富文本编辑器 用于发表文章)
 ![image](image/6.png)
 
 ###  预览地址
-see[43.143.237.212](http://43.143.237.212:81)
+See [43.143.237.212](http://43.143.237.212:81)
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
