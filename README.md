@@ -1,16 +1,16 @@
 # vue-event
 
-## Project setup
+## 下载组件
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 运行
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 打包
 ```
 npm run build
 ```
@@ -37,6 +37,13 @@ vue-quill-editor  (富文本编辑器 用于发表文章)
 
 ```
 ###  演示图
-    image.png
+```
+![image](image/1.jpg)
+![image](image/2.jpg)
+![image](image/3.jpg)
+![image](image/4.jpg)
+![image](image/5.jpg)
+![image](image/6.jpg)
+```
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
