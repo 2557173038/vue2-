@@ -38,7 +38,7 @@ vue-quill-editor  (富文本编辑器 用于发表文章)
 ```
 ###  演示图：
 
-![image](file:///D:/web/code/vue2%E5%A4%A7%E4%BA%8B%E4%BB%B6%E9%A1%B9%E7%9B%AE/vue-event/image/1.jpg)
+![image](https://ts1.cn.mm.bing.net/th?id=OIP-C.n0_p3rYRuofABd3XudbZnAHaEo&w=316&h=197&c=8&rs=1&qlt=90&o=6&dpr=2&pid=3.1&rm=2)
 ![image](image/2.png)
 ![image](image/3.png)
 ![image](image/4.png)
@@ -46,6 +46,6 @@ vue-quill-editor  (富文本编辑器 用于发表文章)
 ![image](image/6.png)
 
 ###  预览地址
-43.143.237.212
+see[43.143.237.212](http://43.143.237.212:81)
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
