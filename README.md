@@ -36,14 +36,14 @@ vue-router vuex   (vue相关生态路由 以及vuex公共状态管理)
 vue-quill-editor  (富文本编辑器 用于发表文章)    
 
 ```
-###  演示图
-```
+###  演示图：
+
 ![image](image/1.jpg)
-![image](image/2.jpg)
-![image](image/3.jpg)
-![image](image/4.jpg)
-![image](image/5.jpg)
-![image](image/6.jpg)
-```
+![image](image/2.png)
+![image](image/3.png)
+![image](image/4.png)
+![image](image/5.png)
+![image](image/6.png)
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
